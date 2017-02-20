@@ -9,10 +9,10 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"strconv"
 	"sync"
 	"time"
 	"os"
+	"strings"
 )
 
 // Errors introduced by handling requests
@@ -122,20 +122,14 @@ func NewInstanceInfo(instanceId string, hostName string, app string, ip string, 
 		Metadata:       nil,
 	}
 
-	stringPort := ""
-	if (port != 80 && port != 443) {
-		stringPort = ":" + strconv.Itoa(port)
-	}
-	var protocol string = "http"
 	if (isSsl) {
-		protocol = "https"
-		instanceInfo.secureVipAddress = protocol + "://" + hostName + stringPort
+		instanceInfo.secureVipAddress = strings.ToLower(app)
 		instanceInfo.SecurePort = &Port{
 			Port: port,
 			Enabled: true,
 		}
 	}else {
-		instanceInfo.VipAddress = protocol + "://" + hostName + stringPort
+		instanceInfo.VipAddress = strings.ToLower(app)
 		instanceInfo.Port = &Port{
 			Port: port,
 			Enabled: true,
